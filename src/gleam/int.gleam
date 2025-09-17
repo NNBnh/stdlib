@@ -282,16 +282,16 @@ pub fn to_float(x: Int) -> Float
 /// ## Examples
 ///
 /// ```gleam
-/// clamp(40, start: 50, stop: 60)
+/// clamp(40, from: 50, to: 60)
 /// // -> 50
 /// ```
 ///
 /// ```gleam
-/// clamp(40, start: 50, stop: 30)
+/// clamp(40, from: 50, to: 30)
 /// // -> 40
 /// ```
 ///
-pub fn clamp(x: Int, start start_bound: Int, stop stop_bound: Int) -> Int {
+pub fn clamp(x: Int, from start_bound: Int, to stop_bound: Int) -> Int {
   case start_bound >= stop_bound {
     True -> x |> min(start_bound) |> max(stop_bound)
     False -> x |> min(stop_bound) |> max(start_bound)
