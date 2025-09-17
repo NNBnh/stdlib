@@ -277,19 +277,25 @@ pub fn to_base36(x: Int) -> String {
 @external(javascript, "../gleam_stdlib.mjs", "identity")
 pub fn to_float(x: Int) -> Float
 
-/// Restricts an int between a lower and upper bound.
+/// Restricts an int between two bounds.
 ///
 /// ## Examples
 ///
 /// ```gleam
-/// clamp(40, min: 50, max: 60)
+/// clamp(40, start: 50, stop: 60)
 /// // -> 50
 /// ```
 ///
-pub fn clamp(x: Int, min min_bound: Int, max max_bound: Int) -> Int {
-  x
-  |> min(max_bound)
-  |> max(min_bound)
+/// ```gleam
+/// clamp(40, start: 50, stop: 30)
+/// // -> 40
+/// ```
+///
+pub fn clamp(x: Int, start start_bound: Int, stop stop_bound: Int) -> Int {
+  case start_bound >= stop_bound {
+    True -> x |> min(start_bound) |> max(stop_bound)
+    False -> x |> min(stop_bound) |> max(start_bound)
+  }
 }
 
 /// Compares two ints, returning an order.
