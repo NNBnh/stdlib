@@ -61,13 +61,13 @@ pub fn to_string_test() {
 }
 
 pub fn clamp_test() {
-  assert float.clamp(1.4, from: 1.3, to: 1.5) == 1.4
+  assert float.clamp(1.4, min: 1.3, max: 1.5) == 1.4
 
-  assert float.clamp(1.2, from: 1.3, to: 1.5) == 1.3
+  assert float.clamp(1.2, min: 1.3, max: 1.5) == 1.3
 
-  assert float.clamp(1.6, from: 1.3, to: 1.5) == 1.5
+  assert float.clamp(1.6, min: 1.3, max: 1.5) == 1.5
 
-  assert float.clamp(1.2, from: 1.4, to: 0.6) == 1.2
+  assert float.clamp(1.2, min: 1.4, max: 0.6) == 1.2
 }
 
 pub fn compare_test() {

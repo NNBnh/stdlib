@@ -68,19 +68,19 @@ pub fn to_string(x: Float) -> String
 /// ## Examples
 ///
 /// ```gleam
-/// clamp(1.2, from: 1.4, to: 1.6)
+/// clamp(1.2, min: 1.4, max: 1.6)
 /// // -> 1.4
 /// ```
 ///
 /// ```gleam
-/// clamp(1.2, from: 1.4, to: 0.6)
+/// clamp(1.2, min: 1.4, max: 0.6)
 /// // -> 1.2
 /// ```
 ///
-pub fn clamp(x: Float, from start_bound: Float, to stop_bound: Float) -> Float {
-  case start_bound >=. stop_bound {
-    True -> x |> min(start_bound) |> max(stop_bound)
-    False -> x |> min(stop_bound) |> max(start_bound)
+pub fn clamp(x: Float, min min_bound: Float, max max_bound: Float) -> Float {
+  case min_bound >=. max_bound {
+    True -> x |> min(min_bound) |> max(max_bound)
+    False -> x |> min(max_bound) |> max(min_bound)
   }
 }
 

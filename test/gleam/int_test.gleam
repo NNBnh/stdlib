@@ -9,15 +9,15 @@ pub fn absolute_value_test() {
 }
 
 pub fn clamp_test() {
-  assert int.clamp(40, from: 30, to: 50) == 40
+  assert int.clamp(40, min: 30, max: 50) == 40
 
-  assert int.clamp(20, from: 30, to: 50) == 30
+  assert int.clamp(20, min: 30, max: 50) == 30
 
-  assert int.clamp(60, from: 30, to: 50) == 50
+  assert int.clamp(60, min: 30, max: 50) == 50
 
-  assert int.clamp(100, from: 50, to: 30) == 50
+  assert int.clamp(100, min: 50, max: 30) == 50
 
-  assert int.clamp(40, from: 50, to: 30) == 40
+  assert int.clamp(40, min: 50, max: 30) == 40
 }
 
 pub fn to_string_test() {
