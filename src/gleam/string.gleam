@@ -27,7 +27,7 @@ pub fn is_empty(str: String) -> Bool {
 /// Gets the number of grapheme clusters in a given `String`.
 ///
 /// This function has to iterate across the whole string to count the number of
-/// graphemes, so it runs in linear time.
+/// graphemes, so it runs in linear time. Avoid using this in a loop.
 ///
 /// ## Examples
 ///
@@ -53,7 +53,7 @@ pub fn length(string: String) -> Int
 /// Reverses a `String`.
 ///
 /// This function has to iterate across the whole `String` so it runs in linear
-/// time.
+/// time. Avoid using this in a loop.
 ///
 /// ## Examples
 ///
@@ -160,6 +160,10 @@ fn less_than(a: String, b: String) -> Bool
 /// Takes a substring given a start grapheme index and a length. Negative indexes
 /// are taken starting from the *end* of the list.
 ///
+/// This function runs in linear time with the size of the index and the
+/// length. Negative indexes are linear with the size of the input string in
+/// addition to the other costs.
+///
 /// ## Examples
 ///
 /// ```gleam
@@ -196,20 +200,25 @@ pub fn slice(from string: String, at_index idx: Int, length len: Int) -> String 
           let translated_idx = length(string) + idx
           case translated_idx < 0 {
             True -> ""
-            False -> do_slice(string, translated_idx, len)
+            False -> grapheme_slice(string, translated_idx, len)
           }
         }
-        False -> do_slice(string, idx, len)
+        False -> grapheme_slice(string, idx, len)
       }
   }
 }
 
 @external(erlang, "gleam_stdlib", "slice")
-@external(javascript, "../gleam_stdlib.mjs", "string_slice")
-fn do_slice(string: String, idx: Int, len: Int) -> String
+@external(javascript, "../gleam_stdlib.mjs", "string_grapheme_slice")
+fn grapheme_slice(string: String, index: Int, length: Int) -> String
+
+@external(erlang, "binary", "part")
+@external(javascript, "../gleam_stdlib.mjs", "string_byte_slice")
+fn unsafe_byte_slice(string: String, index: Int, length: Int) -> String
 
 /// Drops contents of the first `String` that occur before the second `String`.
-/// If the `from` string does not contain the `before` string, `from` is returned unchanged.
+/// If the `from` string does not contain the `before` string, `from` is
+/// returned unchanged.
 ///
 /// ## Examples
 ///
@@ -224,6 +233,8 @@ pub fn crop(from string: String, before substring: String) -> String
 
 /// Drops *n* graphemes from the start of a `String`.
 ///
+/// This function runs in linear time with the number of graphemes to drop.
+///
 /// ## Examples
 ///
 /// ```gleam
@@ -234,11 +245,18 @@ pub fn crop(from string: String, before substring: String) -> String
 pub fn drop_start(from string: String, up_to num_graphemes: Int) -> String {
   case num_graphemes <= 0 {
     True -> string
-    False -> slice(string, num_graphemes, length(string))
+    False -> {
+      let prefix = grapheme_slice(string, 0, num_graphemes)
+      let prefix_size = byte_size(prefix)
+      unsafe_byte_slice(string, prefix_size, byte_size(string) - prefix_size)
+    }
   }
 }
 
 /// Drops *n* graphemes from the end of a `String`.
+///
+/// This function traverses the full string, so it runs in linear time with the
+/// size of the string. Avoid using this in a loop.
 ///
 /// ## Examples
 ///
@@ -621,7 +639,8 @@ pub fn pop_grapheme(string: String) -> Result(#(String, String), Nil)
 ///
 @external(javascript, "../gleam_stdlib.mjs", "graphemes")
 pub fn to_graphemes(string: String) -> List(String) {
-  to_graphemes_loop(string, [])
+  string
+  |> to_graphemes_loop([])
   |> list.reverse
 }
 
@@ -790,6 +809,9 @@ pub fn first(string: String) -> Result(String, Nil) {
 /// `Result(String, Nil)`. If the `String` is empty, it returns `Error(Nil)`.
 /// Otherwise, it returns `Ok(String)`.
 ///
+/// This function traverses the full string, so it runs in linear time with the
+/// length of the string. Avoid using this in a loop.
+///
 /// ## Examples
 ///
 /// ```gleam
@@ -852,7 +874,8 @@ pub fn capitalise(string: String) -> String {
 /// problems.
 ///
 pub fn inspect(term: anything) -> String {
-  do_inspect(term)
+  term
+  |> do_inspect
   |> string_tree.to_string
 }
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.66.0 - 2025-10-21
+
+- The `tap` function from the `function` module has been deprecated.
+
+## v0.65.0 - 2025-09-29
+
+- The performance of the `drop_start` function from the `string` module has
+  been improved.
+
+## v0.64.0 - 2025-09-25
+
+- The `unwrap_both` function of the `result` module has been deprecated.
+
 ## v0.63.2 - 2025-09-15
 
 - The performance of the `list.permutations` function has been improved.

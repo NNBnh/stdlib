@@ -310,7 +310,7 @@ pub opaque type Decoder(t) {
 ///     #(dynamic.string("email"), dynamic.string("lucy@example.com")),
 ///     #(dynamic.string("name"), dynamic.string("Lucy")),
 ///   ])
-/// ]))
+/// ])
 ///
 /// let decoder = {
 ///   use name <- decode.subfield(["data", "name"], decode.string)
@@ -376,9 +376,8 @@ pub fn run(data: Dynamic, decoder: Decoder(t)) -> Result(t, List(DecodeError)) {
 /// let data = dynamic.properties([
 ///   #(dynamic.string("one"), dynamic.properties([
 ///     #(dynamic.string("two"), dynamic.int(1000)),
-///   ])),
-/// ]))
-///
+///   ]),
+/// ])
 ///
 /// decode.run(data, decoder)
 /// // -> Ok(1000)
@@ -409,7 +408,8 @@ fn index(
 ) -> #(b, List(DecodeError)) {
   case path {
     [] -> {
-      inner(data)
+      data
+      |> inner
       |> push_path(list.reverse(position))
     }
 
@@ -463,7 +463,7 @@ fn push_path(
 /// let data = dynamic.properties([
 ///   #(dynamic.string("email"), dynamic.string("lucy@example.com")),
 ///   #(dynamic.string("name"), dynamic.string("Lucy")),
-/// ]))
+/// ])
 ///
 /// let decoder = {
 ///   use name <- decode.field("name", string)
@@ -502,7 +502,7 @@ pub fn decode_error(
 /// let data = dynamic.properties([
 ///   #(dynamic.string("email"), dynamic.string("lucy@example.com")),
 ///   #(dynamic.string("name"), dynamic.string("Lucy")),
-/// ]))
+/// ])
 ///
 /// let decoder = {
 ///   use name <- decode.field("name", string)
@@ -541,7 +541,7 @@ pub fn field(
 /// ```gleam
 /// let data = dynamic.properties([
 ///   #(dynamic.string("name"), dynamic.string("Lucy")),
-/// ]))
+/// ])
 ///
 /// let decoder = {
 ///   use name <- decode.field("name", string)
@@ -588,8 +588,7 @@ pub fn optional_field(
 ///
 /// let data = dynamic.properties([
 ///   #(dynamic.string("one"), dynamic.properties([])),
-/// ]))
-///
+/// ])
 ///
 /// decode.run(data, decoder)
 /// // -> Ok(100)

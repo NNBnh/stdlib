@@ -785,7 +785,16 @@ pub fn fold_right(
 ///
 /// ```gleam
 /// ["a", "b", "c"]
-/// |> index_fold([], fn(acc, item, index) { ... })
+/// |> index_fold("", fn(acc, item, index) {
+///    acc <> int.to_string(index) <> ":" <> item <> " "
+/// })
+/// // -> "0:a 1:b 2:c"
+/// ```
+///
+/// ```gleam
+/// [10, 20, 30]
+/// |> index_fold(0, fn(acc, item, index) { acc + item * index })
+/// // -> 80
 /// ```
 ///
 pub fn index_fold(
@@ -2163,7 +2172,8 @@ pub fn combinations(items: List(a), by n: Int) -> List(List(a)) {
     0, _ -> [[]]
     _, [] -> []
     _, [first, ..rest] ->
-      combinations(rest, n - 1)
+      rest
+      |> combinations(n - 1)
       |> map(fn(combination) { [first, ..combination] })
       |> reverse
       |> fold(combinations(rest, n), fn(acc, c) { [c, ..acc] })
@@ -2204,7 +2214,8 @@ fn combination_pairs_loop(items: List(a), acc: List(#(a, a))) -> List(#(a, a)) {
 /// ```
 ///
 pub fn interleave(list: List(List(a))) -> List(a) {
-  transpose(list)
+  list
+  |> transpose
   |> flatten
 }
 
